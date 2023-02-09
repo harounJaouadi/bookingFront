@@ -3,7 +3,7 @@ import "./NavBar.css";
 const NavBar = function () {
   return (
     <div className="navbar">
-      <div className="navbarContainer">
+      <div className="navContainer">
         <span className="logo">imabooking</span>
         <div className="navItems">
           <button className="navButton">register</button>
