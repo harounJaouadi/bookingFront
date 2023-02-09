@@ -11,6 +11,11 @@
     max-width: 1024px;
     margin: 20px 0px 100px 0px;
 }
+.headerContainer .listMode{
+    margin: 20px 0px 0px 0px;
+
+}
+
 .headerList{
     display: flex;
     gap : 40px ; 
@@ -78,15 +83,35 @@
 .date{
     position: absolute;
     top: 50px;
+    z-index: 2;
 }
 .options{
     position: absolute;
+    z-index: 2;
     top: 50px;
     color: gray;
     background-color: white;
     border-radius: 5px;
     --webkit-box-shadow : 0px 0px 10px -5px rgba(0,0,0,0.4) ;
     box-shadow: 0px 0px 10px -5px rgba(0,0,0,0.4) ; 
+}
+.optionItem{
+    width : 200px ; 
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+}
+
+.optionCounterButton{
+    width: 30px ;
+    height: 30px;
+    border: 1px solid #0071c2;
+    cursor: pointer;
+    background-color: white;
+
+}
+.optionCounterButton:disabled{
+    cursor: not-allowed;
 }
 
 
