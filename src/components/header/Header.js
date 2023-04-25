@@ -7,7 +7,7 @@ import {
   faTaxi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useContext } from "react";
 import "./Header.css";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
@@ -15,21 +15,20 @@ import { DateRange } from "react-date-range";
 import { useState } from "react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { SearchContext } from "../../context/SearchContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Header = (props) => {
   const navigate = useNavigate();
   const [openDate, setOpenDate] = useState(false);
-  const [destination,setDestination]=useState("")
-  const [date, setDate] = useState([
+  const [destination, setDestination] = useState("");
+  const [dates, setDates] = useState([
     {
       startDate: new Date(),
       endDate: new Date(),
       key: "selection",
     },
   ]);
-  const handleSearch = () => {
-    navigate("/hotels" , {state:{destination , date ,options}});
-  };
 
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState({
@@ -38,6 +37,7 @@ const Header = (props) => {
     room: 1,
   });
 
+  const { user } = useContext(AuthContext);
   const handleOption = function (name, operation) {
     setOptions((prev) => {
       if (operation === "i") {
@@ -47,6 +47,19 @@ const Header = (props) => {
       }
       return { ...prev };
     });
+  };
+
+  const { dispatch } = useContext(SearchContext);
+  const handleSearch = () => {
+    dispatch({
+      type: "NEW_SEARCH",
+      payload: {
+        destination,
+        dates,
+        options,
+      },
+    });
+    navigate("/hotels", { state: { destination, dates, options } });
   };
   return (
     <div className="header">
@@ -84,7 +97,8 @@ const Header = (props) => {
               get rewarded for yout travels , unlock instant savings of 10% or
               more with a free lamabooking account
             </p>
-            <button className="headerBtn"> Sign in / register</button>
+            {user && (<button className="headerBtn"> Sign in / register</button>
+            )}
             <div className="headerSearch">
               <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faBed} className="headerIcon" />
@@ -92,7 +106,9 @@ const Header = (props) => {
                   type="text"
                   placeholder="where are you going"
                   className="headerSearchInput"
-                  onChange={e=>{setDestination(e.target.value)}}
+                  onChange={(e) => {
+                    setDestination(e.target.value);
+                  }}
                 />
               </div>
               <div className="headerSearchItem">
@@ -103,8 +119,8 @@ const Header = (props) => {
                     setOpenDate(!openDate);
                   }}
                 >
-                  {`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(
-                    date[0].endDate,
+                  {`${format(dates[0].startDate, "MM/dd/yyyy")} to ${format(
+                    dates[0].endDate,
                     "MM/dd/yyyy"
                   )}`}
                 </span>
@@ -112,9 +128,9 @@ const Header = (props) => {
                   <DateRange
                     className="date"
                     editableDateInputs={true}
-                    onChange={(item) => setDate([item.selection])}
+                    onChange={(item) => setDates([item.selection])}
                     moveRangeOnFirstSelection={false}
-                    ranges={date}
+                    ranges={dates}
                   />
                 )}
               </div>
